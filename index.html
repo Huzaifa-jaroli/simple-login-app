@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Login & Register</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 300px; text-align: center; }
+        input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #007BFF; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        button:hover { background: #0056b3; }
+        .switch { margin-top: 15px; font-size: 14px; color: #555; cursor: pointer; color: #007BFF; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- AUTH CARD -->
+    <div class="card" id="authBox">
+        <h2 id="formTitle">Register</h2>
+        
+        <!-- Registration Form -->
+        <div id="registerForm">
+            <input type="text" id="regUser" placeholder="Username">
+            <input type="password" id="regPass" placeholder="Password">
+            <button onclick="register()">Sign Up</button>
+            <div class="switch" onclick="toggleForm()">Already have an account? Login</div>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginForm" class="hidden">
+            <input type="text" id="logUser" placeholder="Username">
+            <input type="password" id="logPass" placeholder="Password">
+            <button onclick="login()">Sign In</button>
+            <div class="switch" onclick="toggleForm()">Don't have an account? Register</div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD (Hidden by default) -->
+    <div class="card hidden" id="dashboard">
+        <h2>Welcome, <span id="welcomeUser"></span>! 🎉</h2>
+        <p>You have successfully logged in.</p>
+        <button onclick="logout()" style="background: #dc3545;">Logout</button>
+    </div>
+
+    <script>
+        // Switch between Login and Register views
+        function toggleForm() {
+            document.getElementById('registerForm').classList.toggle('hidden');
+            document.getElementById('loginForm').classList.toggle('hidden');
+            document.getElementById('formTitle').innerText = 
+                document.getElementById('registerForm').classList.contains('hidden') ? 'Login' : 'Register';
+        }
+
+        // Register User (Save to Browser's localStorage)
+        function register() {
+            let user = document.getElementById('regUser').value;
+            let pass = document.getElementById('regPass').value;
+
+            if(!user || !pass) return alert("Please fill all fields!");
+
+            localStorage.setItem('savedUser', user);
+            localStorage.setItem('savedPass', pass);
+            alert("Registration successful! Please login.");
+            toggleForm();
+        }
+
+        // Login User (Verify with localStorage)
+        function login() {
+            let user = document.getElementById('logUser').value;
+            let pass = document.getElementById('logPass').value;
+
+            let storedUser = localStorage.getItem('savedUser');
+            let storedPass = localStorage.getItem('savedPass');
+
+            if(user === storedUser && pass === storedPass) {
+                document.getElementById('welcomeUser').innerText = user;
+                document.getElementById('authBox').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+            } else {
+                alert("Invalid username or password!");
+            }
+        }
+
+        // Logout User
+        function logout() {
+            document.getElementById('authBox').classList.remove('hidden');
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('logUser').value = '';
+            document.getElementById('logPass').value = '';
+        }
+    </script>
+</body>
+</html>
